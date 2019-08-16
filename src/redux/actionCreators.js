@@ -4,15 +4,9 @@ export const {
   Types,
   Creators,
 } = createActions({
-  getBreedsRequest: null,
-  getBreedsSuccess: ['breeds'],
-  getBreedsFailure: null,
-
-  saveBreedSelectedSuccess: ['breedSelected'],
-
-  getImageBreedRequest: null,
-  getImageBreedSuccess: ['imageBreed'],
-  getImageBreedFailure: null,
+  getBooksRequest: null,
+  getBooksSuccess: ['books'],
+  getBooksFailure: null,
 
   getUsersRequest: null,
   getUsersSuccess: ['users'],

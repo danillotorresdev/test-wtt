@@ -1,12 +1,8 @@
 import { combineReducers } from 'redux';
-import breeds from './breeds';
-import imageBreed from './imageBreed';
-import users from './users';
+import books from './books';
 
 const rootReducer = combineReducers({
-  breeds,
-  imageBreed,
-  users,
+  books,
 });
 
 export default rootReducer;
