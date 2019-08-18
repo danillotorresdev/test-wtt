@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import BookModal from './BookModal'
 import { NotificationContainer, NotificationManager } from 'react-notifications';
+import BookModal from './BookModal';
 
 import ActionCreators from '../redux/actionCreators';
 
@@ -12,6 +12,7 @@ class FormFilter extends Component {
     this.state = {
       modalActive: 0,
       showModal: null,
+      booksInCart: [],
     };
 
     this.handleModal = this.handleModal.bind(this);
@@ -21,6 +22,14 @@ class FormFilter extends Component {
   componentDidMount() {
     const { loadBooks } = this.props;
     loadBooks();
+
+    let livrosGuardados = localStorage.getItem('booksInCart');
+    if (livrosGuardados) {
+      livrosGuardados = JSON.parse(livrosGuardados);
+      this.setState({
+        booksInCart: livrosGuardados,
+      });
+    }
   }
 
   handleModal(index) {
@@ -31,11 +40,37 @@ class FormFilter extends Component {
   }
 
   hideModal() {
-    console.log("funcionou")
     this.setState({
       modalActive: 0,
       showModal: null,
     });
+  }
+
+  handleSaveBooksInCart(
+    modalBookId,
+    modalBookImage,
+    modalBookInfo,
+    modalBookPrice,
+    modalBookTitle,
+  ) {
+    const { booksInCart } = this.state;
+    const { saveBooksInCart } = this.props;
+    const book = {
+      id: modalBookId,
+      image: modalBookImage,
+      info: modalBookInfo,
+      price: modalBookPrice,
+      title: modalBookTitle,
+    };
+    booksInCart.push(book);
+    saveBooksInCart({
+      booksInCart,
+    }, this.setState({
+      modalActive: 0,
+      showModal: null,
+    }));
+    localStorage.setItem('booksInCart', JSON.stringify(booksInCart));
+    NotificationManager.success('Item salvo no carrinho :)');
   }
 
   render() {
@@ -45,8 +80,10 @@ class FormFilter extends Component {
     let modalBookInfo;
     let modalBookPrice;
     let modalBookImage;
+    let modalBookId;
     if (books.data) {
       if (books.data[modalActive]) {
+        modalBookId = books.data[modalActive].id;
         modalBookTitle = books.data[modalActive].title;
         modalBookInfo = books.data[modalActive].info;
         modalBookPrice = books.data[modalActive].price;
@@ -80,6 +117,13 @@ class FormFilter extends Component {
           modalBookPrice={modalBookPrice}
           modalBookTitle={modalBookTitle}
           hideModal={() => this.hideModal()}
+          handleSaveBooksInCart={() => this.handleSaveBooksInCart(
+            modalBookId,
+            modalBookImage,
+            modalBookInfo,
+            modalBookPrice,
+            modalBookTitle,
+          )}
 
         />
       </>
@@ -87,16 +131,13 @@ class FormFilter extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    books: state.books,
-  };
-};
+const mapStateToProps = state => ({
+  books: state.books,
+});
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    loadBooks: () => dispatch(ActionCreators.getBooksRequest())
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  loadBooks: () => dispatch(ActionCreators.getBooksRequest()),
+  saveBooksInCart: booksInCart => dispatch(ActionCreators.saveBooksInCartSuccess(booksInCart)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(FormFilter);

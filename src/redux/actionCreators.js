@@ -8,6 +8,8 @@ export const {
   getBooksSuccess: ['books'],
   getBooksFailure: null,
 
+  saveBooksInCartSuccess: ['booksInCart'],
+
   getUsersRequest: null,
   getUsersSuccess: ['users'],
   getUsersFailure: null,

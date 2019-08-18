@@ -14,7 +14,7 @@ class Login extends Component {
         login: '',
         senha: '',
       },
-      alert: null
+      alert: null,
     };
 
     this.handleLogin = this.handleLogin.bind(this);
@@ -41,7 +41,8 @@ class Login extends Component {
   }
 
   handleLogin(e) {
-    const { senha } = this.state.user;
+    const { user } = this.state;
+    const { senha } = user;
     this.setState({
       user: {
         login: e.target.value,
@@ -51,7 +52,8 @@ class Login extends Component {
   }
 
   handleSenha(e) {
-    const { login } = this.state.user;
+    const { user } = this.state;
+    const { login } = user;
     this.setState({
       user: {
         login,
@@ -61,23 +63,25 @@ class Login extends Component {
   }
 
   auth(e) {
+    const { users } = this.props;
+    const { user } = this.state;
     e.preventDefault();
-    const userDB = this.props.users[0];
-    const userState = this.state.user;
-    if (userState.login !== "" && userState.senha !== 0) {
+    const userDB = users[0];
+    const userState = user;
+    if (userState.login && userState.senha) {
       if (userState.login === userDB.login && userState.senha === userDB.senha) {
-        //usuario logado, salva no localStorage
+        // usuario logado, salva no localStorage
         NotificationManager.success('Logado com sucesso');
         localStorage.setItem('login', userState.login);
         localStorage.setItem('senha', userState.senha);
 
         window.location.reload();
-        //redireciona para a pagina interna
+        // redireciona para a pagina interna
       } else {
         NotificationManager.error('Seus dados estão incorretos');
       }
     } else {
-      //se o usuario nao digitar nada na tela
+      // se o usuario nao digitar nada na tela
       NotificationManager.error('Você precisa digitar suas credenciais para logar');
       this.setState({ alert: 'alert-danger' });
     }
@@ -111,7 +115,6 @@ class Login extends Component {
         <NotificationContainer />
       </div>
     );
-
   }
 }
 
